@@ -1,5 +1,5 @@
 variable "lab-project" {
-  default = "<YOUR LAB PROJECT ID>"
+  default = "{your-projectid}"
 }
 variable "lab-region" {
   default = "us-east1"
