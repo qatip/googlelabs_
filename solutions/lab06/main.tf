@@ -9,7 +9,8 @@ terraform {
 # Variables (self-contained)
 #############################
 variable "project_id"         {
-  type = string 
+  type = string
+  default = "{your-projectid}" 
 }
 variable "region"             {
   type = string
@@ -59,6 +60,7 @@ resource "google_storage_bucket" "media" {
   storage_class               = var.default_storage_class
   uniform_bucket_level_access = true
   public_access_prevention    = "enforced"
+  force_destroy = true
 
   versioning { enabled = true }
 
