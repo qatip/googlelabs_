@@ -14,8 +14,8 @@ provider "google" {
 
 resource "google_compute_instance" "default" {
   name         = "my-instance"
-#  machine_type = "n2-standard-2"
-  machine_type = "e2-small"
+  machine_type = "n2-standard-2"
+# Change to > machine_type = "e2-small"
   zone         = "us-central1-a"
   allow_stopping_for_update = true
 
@@ -23,8 +23,8 @@ resource "google_compute_instance" "default" {
 
   boot_disk {
     initialize_params {
-#      image = "debian-cloud/debian-11"
-      image = "ubuntu-os-cloud/ubuntu-2004-lts"
+       image = "debian-cloud/debian-11"
+# Chnage to > image =  "ubuntu-minimal-2404-noble-amd64-v20250725"
       
       labels = {
         my_label = "value"
