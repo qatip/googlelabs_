@@ -8,7 +8,7 @@ In the IDE, navigate to googlelab_\githubactions
 
 At the terminal:
 	
-	cd~/googlelabs_/githubactions
+	cd ~/googlelabs_/GithubActions
 
 Edit bootstrap/terraform.tfvars:
 
@@ -89,6 +89,7 @@ push the branch
 Create a branch that changes something under infra/, open a PR ? terraform-plan runs and comments the plan.
 
 Merge to main ? terraform-apply runs. Approve the prod environment ? resources are created.
+
 
 
 
