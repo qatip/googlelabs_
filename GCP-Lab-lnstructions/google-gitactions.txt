@@ -12,25 +12,23 @@ At the terminal:
 
 Edit bootstrap/terraform.tfvars:
 
-project_id = "<your_project_id>"
-
-repo_full_name = "<your git user or org>/<your repo name>"
-
-state_bucket_name = "tf-state-<yourname>-###" (globally unique)
+	project_id = "<your_project_id>"
+	repo_full_name = "<your git user or org>/<your repo name>"
+	state_bucket_name = "tf-state-<yourname>-###" (globally unique)
 
 
 Run bootstrap locally:
 
-cd bootstrap
-terraform init
-terraform apply
+	cd bootstrap
+	terraform init
+	terraform apply
 
 
 Copy the three outputs for later use....
 
-service_account_email
-state_bucket
-workload_identity_provider_resource
+	service_account_email
+	state_bucket
+	workload_identity_provider_resource
 
 Move up to the parent directory (googlelabs_/githubactions)
 	
@@ -54,21 +52,22 @@ Set GOOGLE_PROJECT (project id).
 (Update Region is not using europe-west1 as per bootstrap)
 
 Run..
-
-git add .github/workflows
-git commit -m "Add TF plan/apply workflows"
-git push
+	
+	git add .github/workflows
+	git commit -m "Add TF plan/apply workflows"
+	git push
 
 Refresh your Repo and verify .github/workflows appear
 
-In the IDE, update the project id, backend bucket name and, if necessary, the region, specified in the intra/main.tf and infra/terraform.tfvars to match your project and the bucket name and region specified in your bootstrap/ terraform.tfvars file. (FYI-Variables cant be used when specifying a remote backend)
+In the IDE, update the project id, backend bucket name and, if necessary, the region, specified in the intra/main.tf and infra/terraform.tfvars 
+to match your project and the bucket name and region specified in your bootstrap/ terraform.tfvars file. 
+(FYI-Variables cant be used when specifying a remote backend)
 
 run fmt against the infra files prior to uploading to the repo
 
 	cd infra
 	terraform fmt
 	cd .. 
-
 
 create a feature branch
 	
@@ -90,5 +89,6 @@ push the branch
 Create a branch that changes something under infra/, open a PR ? terraform-plan runs and comments the plan.
 
 Merge to main ? terraform-apply runs. Approve the prod environment ? resources are created.
+
 
 
