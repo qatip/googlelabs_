@@ -1,0 +1,39 @@
+name: terraform-apply
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "infra/**"
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  TF_IN_AUTOMATION: "true"
+  WORKLOAD_IDENTITY_PROVIDER: <add here - np quotes>
+  SERVICE_ACCOUNT: <add here - no quotes>
+  GOOGLE_PROJECT: <Add here -  no quotes>
+  GOOGLE_REGION: europe-west1
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    environment: prod   # create this Environment in GitHub with required reviewers
+    steps:
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          token_format: access_token
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
+      - uses: google-github-actions/setup-gcloud@v2
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform -chdir=infra init -input=false
+
+      - name: Select/Create Workspace
+        run: terraform -chdir=infra workspace select prod || terraform -chdir=infra workspace new prod
+
+      - name: Terraform Apply
+        run: terraform -chdir=infra apply -auto-approve -input=false -var "project_id=${{ env.GOOGLE_PROJECT }}" -var "region=${{ env.GOOGLE_REGION }}"
