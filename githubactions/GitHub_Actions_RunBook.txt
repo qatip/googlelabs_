@@ -52,7 +52,7 @@ Copy into your repo from googlelabs_/githubactions:
    - infra folder
    Do NOT copy the bootstrap folder.
 
-Note: hidden files may not be displayed, so you may not see the above .gihub folder.
+Note: hidden files may not be displayed, so you may not see the .gihub folder yet.
 If so then select View, 'Toggle Hidden Files' to display hidden files
 
 
