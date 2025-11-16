@@ -1,4 +1,4 @@
-project_id        = "<your_project_id>"         
+project_id        = "<your subscription id>"         
 region            = "europe-west1"
-state_bucket_name = "tf-state-ga-<your_name_suffix>"
+state_bucket_name = "tf-state-ga-<unique suffix>"
 

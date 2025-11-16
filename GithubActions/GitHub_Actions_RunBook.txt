@@ -1,79 +1,133 @@
 GitHub Actions Student Run-Book
-1. Create a New Private GitHub Repository
-1. Log in to GitHub.
-2. Create a **new private repository**.
-3. Create a **Personal Access Token (classic)** with `repo` and `workflow` permissions.
-4. Copy the token — you will not see it again.
+===============================
+Create a New Private GitHub Repository:
+   Log in to GitHub.
+   Create a **new private repository**.
+   Create a **Personal Access Token (classic)** with `repo` and `workflow` permissions.
+   Copy the token as you will not see it again.
 
-2. Create a GCP Service Account Key
-5. Run the following command:
-gcloud iam service-accounts keys create ./gha-sa-key.json --iam-account="<your qwiklabs service account>" --project="<your project id>"
+Create a GCP Service Account Key
+================================
+Run the following command:
+
+   gcloud iam service-accounts keys create ./gha-sa-key.json --iam-account="<your qwiklabs service account>" --project="<your project id>"
+
 A JSON key file will download automatically.
 
-3. Add the Key to GitHub as a Secret
-6. Go to **Settings ? Secrets and variables ? Actions**.
-7. Click **New repository secret**.
-Name: `GCP_SA_KEY`.
-Paste the **entire content** of the JSON file.
-
-4. Prepare the Bootstrap Backend
-8. cd ~/googlelabs_/githubactions
-9. Edit bootstrap/terraform.tfvars:
-project_id        = "<your_project_id>"
-state_bucket_name = "tf-state-<yourname>-###"
-10. Run:
-cd bootstrap
-terraform init
-terraform apply
-5. Set Up Your Working Repo
-11. cd ~/googlelabs_
-12. git clone <your_repo_url>
-13. cd <repo_name>
-14. Copy into your repo from googlelabs_/githubactions:
-- .github folder
-- infra folder
-Do NOT copy the bootstrap folder.
-
-6. Update Workflow YAML Files
-15. Edit `.github/workflows/plan.yaml` and `.github/workflows/apply.yaml`:
-- Set GOOGLE_PROJECT
-- Update region if needed
+Add the Key to GitHub as a Secret...
+   Go to **Settings > Secrets and variables > Actions**.
+   Click **New repository secret**.
+      Name: `GCP_SA_KEY`.
+      Paste the **entire content** of the JSON file.
 
 
-7. Commit the Workflow Files
-16. Run: git add .github/workflows
-17. Run: git commit -m "Add TF plan/apply workflows"
-18. Run: git push
+Prepare the Bootstrap Backend
+=============================
+cd ~/googlelabs_/githubactions
+
+Edit bootstrap/terraform.tfvars:
+   project_id        = "<your_project_id>"
+   state_bucket_name = "tf-state-<yourname>-###"
+
+Run:
+   cd bootstrap
+   terraform init
+   terraform apply
+
+
+Set Up Your Working Repo
+========================
+cd ~/googlelabs_
+git clone <your_repo_url>
+cd <repo_name>
+Copy into your repo from googlelabs_/githubactions:
+   - .github folder
+   - infra folder
+   Do NOT copy the bootstrap folder.
+
+
+Update Workflow YAML Files
+==========================
+Edit `.github/workflows/plan.yaml` and `.github/workflows/apply.yaml`:
+   - Set GOOGLE_PROJECT
+   - Update region if needed
+
+Commit the Workflow Files;
+   git add .github/workflows
+   git commit -m "Add TF plan/apply workflows"
+   git push
 Verify workflows appear in GitHub.
 
-8. Configure Terraform Infra
-19. Update infra/main.tf and infra/terraform.tfvars to match:
-- project_id
-- state_bucket_name
-- region
+
+Configure Terraform Infra
+=========================
+Update infra/main.tf and infra/terraform.tfvars to match:
+   - project_id
+   - state_bucket_name
+   - region
 
    Note: backend values cannot use variables.
-20. Format the Terraform code by running:
-cd infra
+
+Format the Terraform code by running:
+   cd infra
+   terraform fmt
+   cd ..
+
+Create Your First Feature Branch
+================================
+git checkout -b feat/first-plan
+git add infra
+git commit -m "Add infra (backend/providers/demo)"
+git push -u origin feat/first-plan
+
+10. Open your repo and Process the Pull Request
+==============================================
+Switch to your repo in Github
+
+Click **Compare & pull request**.
+
+Review changes.
+
+Click **Create pull request**.
+
+GitHub Actions runs Terraform **plan**.
+
+If clean: **Merge pull request and delete branch**
+ GitHub Actions runs **apply**.
+ Review the apply logs.
+
+Verify in GCP console;
+   Remote state bucket exists.
+   File `prod.tfstate` exists inside the bucket.
+
+
+Interacting with GitHub
+=======================
+
+git checkout main
+git pull
+
+To list old local branches and clean up	
+	git branch --merged main
+	git branch -d <old local branch to delete>
+	git fetch --prune
+
+git checkout -b <new branch name>
+
+make changes to your infrastructure in infra folder
+
+cd infra 
 terraform fmt
 cd ..
-9. Create Your First Feature Branch
-21. Run: git checkout -b feat/first-plan
-22. Run: git add infra
-23. Run: git commit -m "Add infra (backend/providers/demo)"
-24. Run: git push -u origin feat/first-plan
 
-10. Open and Process the Pull Request
-25. Switch to your repo in Github
-26. Click **Compare & pull request**.
-27. Review changes.
-28. Click **Create pull request**.
-29. GitHub Actions runs Terraform **plan**.
-30. If clean: **Merge pull request**.
-31. Delete branch.
-32. GitHub Actions runs **apply**.
-33. Review the apply logs.
-11. Verify in GCP
-34. Check in GCP Console:
-- Remote state bucket exists.
-- File `prod.tfstate` exists inside the bucket.
+git add infra
+
+git commit -m "description"
+
+git push -u origin <new branch name>
+
+switch to Github, process PR and Merge
+
+rinse and repeat
+
+
