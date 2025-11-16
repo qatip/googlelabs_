@@ -32,7 +32,7 @@ Edit bootstrap/terraform.tfvars:
 Run:
    cd bootstrap
    terraform init
-   terraform apply
+   terraform apply --auto-approve
 
 
 Set Up Your Working Repo
@@ -48,7 +48,7 @@ Copy into your repo from googlelabs_/githubactions:
 
 Update Workflow YAML Files
 ==========================
-Edit `.github/workflows/plan.yaml` and `.github/workflows/apply.yaml`:
+Edit `.github/workflows/plan.yaml`,`.github/workflows/apply.yaml`,`.github/workflows/destroy.yaml`:
    - Set GOOGLE_PROJECT
    - Update region if needed
 
@@ -83,13 +83,9 @@ git push -u origin feat/first-plan
 10. Open your repo and Process the Pull Request
 ==============================================
 Switch to your repo in Github
-
 Click **Compare & pull request**.
-
 Review changes.
-
 Click **Create pull request**.
-
 GitHub Actions runs Terraform **plan**.
 
 If clean: **Merge pull request and delete branch**
@@ -101,18 +97,18 @@ Verify in GCP console;
    File `prod.tfstate` exists inside the bucket.
 
 
-Interacting with GitHub
-=======================
+Daily Interaction with GitHub
+=============================
 
 git checkout main
 git pull
 
-To list old local branches and clean up	
+Optional: To list old local branches and clean up	
 	git branch --merged main
 	git branch -d <old local branch to delete>
 	git fetch --prune
 
-git checkout -b <new branch name>
+git checkout -b <new branch name> eg feat/rename-bucket
 
 make changes to your infrastructure in infra folder
 
@@ -124,10 +120,21 @@ git add infra
 
 git commit -m "description"
 
-git push -u origin <new branch name>
+git push -u origin <new branch name> eg feat/rename-bucket
 
 switch to Github, process PR and Merge
 
 rinse and repeat
+
+To delete everything
+====================
+On Repo;
+
+Select Actions
+Select terraform-destroy
+Click on 'Run workflow'
+Type 'DESTROY'
+Click ON 'Run workflow'
+
 
 
