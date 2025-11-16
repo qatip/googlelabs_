@@ -3,7 +3,11 @@ GithubActions Student run-book
 Create a new private repo on GitHub and a Personal Access token
 
 Copy the token and keep it safe 
-  
+
+
+
+
+
 In the IDE, navigate to googlelab_\githubactions
 
 At the terminal:

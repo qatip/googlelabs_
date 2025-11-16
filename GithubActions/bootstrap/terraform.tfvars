@@ -1,7 +1,4 @@
-project_id        = "<your project id>"         
+project_id        = "<your_project_id>"         
 region            = "europe-west1"
-repo_full_name    = "<your git user or org>/<your repo name>"
-state_bucket_name = "tf-state-<yourname>-###"
-wif_pool_id = "gha-pool-abc"
-tf_runner_sa_id = "tf-runner"
-wif_provider_id = "gha-provider"
+state_bucket_name = "tf-state-ga-<your_name_suffix>"
+

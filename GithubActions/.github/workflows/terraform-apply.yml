@@ -6,34 +6,37 @@ on:
       - "infra/**"
 
 permissions:
-  id-token: write
   contents: read
 
 env:
   TF_IN_AUTOMATION: "true"
-  WORKLOAD_IDENTITY_PROVIDER: <add here - np quotes>
-  SERVICE_ACCOUNT: <add here - no quotes>
-  GOOGLE_PROJECT: <Add here -  no quotes>
+  GOOGLE_PROJECT: <your_project_id>
   GOOGLE_REGION: europe-west1
+
 jobs:
   apply:
     runs-on: ubuntu-latest
-    environment: prod   # create this Environment in GitHub with required reviewers
+    environment: prod  # keep if you want approval
     steps:
       - uses: actions/checkout@v4
+
+      # Key-based auth (same secret)
       - uses: google-github-actions/auth@v2
         with:
-          token_format: access_token
-          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ env.SERVICE_ACCOUNT }}
-      - uses: google-github-actions/setup-gcloud@v2
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          export_environment_variables: true
+
       - uses: hashicorp/setup-terraform@v3
+      - uses: google-github-actions/setup-gcloud@v2
 
       - name: Terraform Init
         run: terraform -chdir=infra init -input=false
 
-      - name: Select/Create Workspace
-        run: terraform -chdir=infra workspace select prod || terraform -chdir=infra workspace new prod
+      # 👇 fixed workspace (prod)
+      - name: Select/Create Workspace (prod)
+        run: |
+          terraform -chdir=infra workspace select prod \
+          || terraform -chdir=infra workspace new prod
 
       - name: Terraform Apply
         run: terraform -chdir=infra apply -auto-approve -input=false -var "project_id=${{ env.GOOGLE_PROJECT }}" -var "region=${{ env.GOOGLE_REGION }}"

@@ -15,8 +15,7 @@ terraform {
 
 terraform {
   backend "gcs" {
-    bucket = "<your backend bucket name here>" 
-    prefix = "dev"        # any folder-ish prefix you like
+    bucket = "<your_bucket_name>"
   }
 }
 
