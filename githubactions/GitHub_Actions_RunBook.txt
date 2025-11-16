@@ -64,11 +64,12 @@ Edit `.github/workflows/plan.yaml`,`.github/workflows/apply.yaml`,`.github/workf
    - Update region if needed
 
 Commit the Workflow Files;
+   git config user.email <email account of your github repo>
+   git config user <github username>
    git add .github/workflows
    git commit -m "Add TF plan/apply workflows"
    git push
 Verify workflows appear in GitHub.
-
 
 Configure Terraform Infra
 =========================
