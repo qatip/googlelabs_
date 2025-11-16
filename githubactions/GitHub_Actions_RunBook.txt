@@ -38,7 +38,14 @@ Run:
 Set Up Your Working Repo
 ========================
 cd ~/googlelabs_
+
+Note: 
+On QWIKLABS, as you action the next command, you will receive a prompt requesting
+that the Github extension be allowed to sign in to Github. Click allow and follow the 
+prompts to direct you through the authorization process.
+
 git clone <your_repo_url>
+
 cd <repo_name>
 Copy into your repo from googlelabs_/githubactions:
    - .github folder
