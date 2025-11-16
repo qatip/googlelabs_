@@ -45,12 +45,16 @@ that the Github extension be allowed to sign in to Github. Click allow and follo
 prompts to direct you through the authorization process.
 
 git clone <your_repo_url>
-
 cd <repo_name>
+
 Copy into your repo from googlelabs_/githubactions:
    - .github folder
    - infra folder
    Do NOT copy the bootstrap folder.
+
+Note: hidden files may not be displayed, so you may not see the above .gihub folder.
+If so then select View, 'Toggle Hidden Files' to display hidden files
+
 
 
 Update Workflow YAML Files
