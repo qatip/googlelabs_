@@ -1,0 +1,12 @@
+Go into Portal and manually create a subnet on the managed VPC
+Name the subnet 'eu-subnet' with cidr 10.0.3.0/24 in europe-west-2
+
+terraform import google_compute_subnetwork.eu_subnet projects/<YOUR_PROJECT_ID>/regions/europe-west2/subnetworks/eu-subnet
+
+Error - need a resource block first
+
+Duplicate existing block and update to match manually provisioned subnetwork
+
+Retry
+
+
