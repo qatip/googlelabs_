@@ -32,7 +32,6 @@ jobs:
       - name: Terraform Init
         run: terraform -chdir=infra init -input=false
 
-      # 👇 fixed workspace (prod)
       - name: Select/Create Workspace (prod)
         run: |
           terraform -chdir=infra workspace select prod \
