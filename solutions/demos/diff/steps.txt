@@ -1,0 +1,5 @@
+terraform show -no-color terraform.tfstate        > current.txt
+terraform show -no-color terraform.tfstate.backup > backup.txt
+
+code --diff backup.txt current.txt 
+
