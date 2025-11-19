@@ -1,47 +1,58 @@
+# .github/workflows/terraform-destroy.yml
 name: terraform-destroy
 
 on:
   workflow_dispatch:
     inputs:
+      environment:
+        description: "Environment to destroy"
+        required: true
+        type: choice
+        options:
+          - dev
+          - test
+          - prod
       confirm:
-        description: "Type DESTROY to confirm full destroy of infra (workspace: prod)"
+        description: "Type DESTROY to confirm"
         required: true
         default: "NO"
 
 permissions:
   contents: read
 
-env:
-  TF_IN_AUTOMATION: "true"
-  GOOGLE_PROJECT: <your_project_id>
-  GOOGLE_REGION: europe-west1
-
 jobs:
   destroy:
-    # Safety guard – only run when user explicitly types DESTROY
-    if: ${{ github.event.inputs.confirm == 'DESTROY' }}
     runs-on: ubuntu-latest
-    environment: prod
+    if: github.event.inputs.confirm == 'DESTROY'
+
+    env:
+      TF_IN_AUTOMATION: "true"
+      TF_ENV: ${{ github.event.inputs.environment }}
+      GOOGLE_PROJECT: {project id}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      # Same auth pattern as apply
-      - uses: google-github-actions/auth@v2
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
-          export_environment_variables: true
-
-      - uses: hashicorp/setup-terraform@v3
-      - uses: google-github-actions/setup-gcloud@v2
 
       - name: Terraform Init
         run: terraform -chdir=infra init -input=false
 
-      - name: Select/Create Workspace (prod)
+      - name: Select Workspace (${{ env.TF_ENV }})
         run: |
-          terraform -chdir=infra workspace select prod \
-          || terraform -chdir=infra workspace new prod
+          terraform -chdir=infra workspace select "${{ env.TF_ENV }}" \
+          || terraform -chdir=infra workspace new "${{ env.TF_ENV }}"
 
-      - name: Terraform Destroy (prod)
-        run: terraform -chdir=infra destroy -auto-approve -input=false -var "project_id=${{ env.GOOGLE_PROJECT }}" -var "region=${{ env.GOOGLE_REGION }}"
+      - name: Terraform Destroy (${{ env.TF_ENV }})
+        run: |
+          terraform -chdir=infra destroy \
+            -auto-approve \
+            -input=false \
+            -var-file="${{ env.TF_ENV }}.tfvars"

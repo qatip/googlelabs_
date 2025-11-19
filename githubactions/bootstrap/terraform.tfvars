@@ -1,4 +1,4 @@
-project_id        = "<your subscription id>"         
+project_id        = "{project id}"         
 region            = "europe-west1"
-state_bucket_name = "tf-state-ga-<unique suffix>"
+state_bucket_name = "{unique stste storage account name}"
 

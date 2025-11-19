@@ -1,4 +1,6 @@
+# .github/workflows/terraform-plan.yml
 name: terraform-plan
+
 on:
   pull_request:
     paths:
@@ -12,43 +14,51 @@ permissions:
 jobs:
   plan:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        env: [dev, test, prod]   
     env:
       TF_IN_AUTOMATION: "true"
-      GOOGLE_PROJECT: <your_project_id>
-      GOOGLE_REGION: europe-west1
-    steps:
-      - uses: actions/checkout@v4
+      TF_ENV: ${{ matrix.env }}          # dev / test / prod
+      GOOGLE_PROJECT: {project id}
 
-      # Key-based auth (GCP_SA_KEY is a repo secret with the SA JSON)
-      - uses: google-github-actions/auth@v2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
-          export_environment_variables: true
-
-      - uses: hashicorp/setup-terraform@v3
-      - uses: google-github-actions/setup-gcloud@v2
-
-      - name: Terraform Fmt
-        run: terraform -chdir=infra fmt -check -recursive
 
       - name: Terraform Init
         run: terraform -chdir=infra init -input=false
 
-      - name: Select/Create Workspace (prod)
+      - name: Select/Create Workspace (${{ env.TF_ENV }})
         run: |
-          terraform -chdir=infra workspace select prod \
-          || terraform -chdir=infra workspace new prod
+          terraform -chdir=infra workspace select "${{ env.TF_ENV }}" \
+          || terraform -chdir=infra workspace new "${{ env.TF_ENV }}"
 
       - name: Terraform Validate
         run: terraform -chdir=infra validate
 
-      - name: Terraform Plan
-        run: terraform -chdir=infra plan -no-color -input=false -var "project_id=${{ env.GOOGLE_PROJECT }}" -var "region=${{ env.GOOGLE_REGION }}" -out tfplan
+      - name: Terraform Plan (${{ env.TF_ENV }})
+        run: |
+          terraform -chdir=infra plan \
+            -no-color \
+            -input=false \
+            -var-file="${{ env.TF_ENV }}.tfvars" \
+            -out="tfplan-${{ env.TF_ENV }}"
 
-      - name: Show Plan
-        run: terraform -chdir=infra show -no-color tfplan > plan.txt
+      - name: Show Plan (${{ env.TF_ENV }})
+        run: terraform -chdir=infra show -no-color "tfplan-${{ env.TF_ENV }}" > "plan-${{ env.TF_ENV }}.txt"
 
-      - name: Comment Plan on PR
+      - name: Comment Plan on PR (${{ env.TF_ENV }})
         uses: marocchino/sticky-pull-request-comment@v2
         with:
-          path: plan.txt
+          header: "terraform plan (${{ env.TF_ENV }})"
+          path: "plan-${{ env.TF_ENV }}.txt"

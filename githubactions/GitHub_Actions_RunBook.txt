@@ -61,7 +61,6 @@ Update Workflow YAML Files
 ==========================
 Edit `.github/workflows/plan.yaml`,`.github/workflows/apply.yaml`,`.github/workflows/destroy.yaml`:
    - Set GOOGLE_PROJECT
-   - Update region if needed
 
 Commit the Workflow Files;
    git config user.email <email account of your github repo>
@@ -76,7 +75,6 @@ Configure Terraform Infra
 Update infra/main.tf and infra/terraform.tfvars to match:
    - project_id
    - state_bucket_name
-   - region
 
    Note: backend values cannot use variables.
 

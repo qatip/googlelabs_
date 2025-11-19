@@ -1,2 +1,1 @@
-project_id = "<your_project_id>"
-region     = "europe-west1"
+project_id = "{project id}"
